@@ -355,6 +355,7 @@ class PowerIQCollector:
         yield state_fam
 
     def _collect_events(self, active_events):
+        # Summary count by severity
         counts: dict[str, int] = {s: 0 for s in SEVERITY_LEVELS}
         for event in active_events:
             sev = (event.get("severity") or "INFORMATIONAL").upper()
@@ -367,3 +368,20 @@ class PowerIQCollector:
         for sev in SEVERITY_LEVELS:
             g.add_metric([sev], counts.get(sev, 0))
         yield g
+
+        # Individual active events with detail labels.
+        # Cardinality is bounded by the number of *currently active* events,
+        # which is typically small.  Events disappear once cleared.
+        event_fam = GaugeMetricFamily(
+            "poweriq_event_active",
+            "Active (uncleared) event.  Value is always 1; labels carry detail.",
+            labels=["severity", "name", "eventable_type", "data_center", "rack"],
+        )
+        for event in active_events:
+            sev = (event.get("severity") or "INFORMATIONAL").upper()
+            name = event.get("name", "unknown")
+            etype = event.get("eventable_type", "")
+            dc = event.get("data_center_name", "")
+            rack = event.get("rack_name", "")
+            event_fam.add_metric([sev, name, etype, dc, rack], 1)
+        yield event_fam

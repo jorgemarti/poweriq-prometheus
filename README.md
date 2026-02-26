@@ -139,7 +139,8 @@ Active events are those with no `cleared_at` timestamp.
 
 | Metric | Labels | Description |
 |--------|--------|-------------|
-| `poweriq_active_events` | severity | Active (uncleared) event count by severity (CRITICAL, WARNING, INFORMATIONAL) |
+| `poweriq_active_events` | severity | Summary count of active events by severity (CRITICAL, WARNING, INFORMATIONAL) |
+| `poweriq_event_active` | severity, name, eventable_type, data_center, rack | Individual active event (value=1). Disappears when cleared. |
 
 ### Exporter self-metrics
 

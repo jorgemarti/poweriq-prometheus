@@ -102,8 +102,24 @@ class FakePowerIQClient:
 
     def get_events(self) -> list[dict]:
         return [
-            {"severity": "WARNING", "name": "High temperature", "cleared_at": None},
-            {"severity": "WARNING", "name": "Humidity out of range", "cleared_at": None},
-            {"severity": "CRITICAL", "name": "Data collection failed", "cleared_at": None},
-            {"severity": "INFORMATIONAL", "name": "PDU discovered", "cleared_at": "2026/01/01 00:00:00 +0000"},
+            {
+                "severity": "WARNING", "name": "High temperature",
+                "eventable_type": "sensor", "data_center_name": "DC-East",
+                "rack_name": "Rack-A01", "cleared_at": None,
+            },
+            {
+                "severity": "WARNING", "name": "Humidity out of range",
+                "eventable_type": "sensor", "data_center_name": "DC-East",
+                "rack_name": "Rack-A02", "cleared_at": None,
+            },
+            {
+                "severity": "CRITICAL", "name": "Data collection failed",
+                "eventable_type": "pdu", "data_center_name": "DC-West",
+                "rack_name": "Rack-B01", "cleared_at": None,
+            },
+            {
+                "severity": "INFORMATIONAL", "name": "PDU discovered",
+                "eventable_type": "pdu", "data_center_name": "DC-East",
+                "rack_name": "Rack-A01", "cleared_at": "2026/01/01 00:00:00 +0000",
+            },
         ]
