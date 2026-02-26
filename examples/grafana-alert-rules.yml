@@ -1,0 +1,57 @@
+# Grafana alert rules for PowerIQ monitoring.
+# Import via Grafana UI (Alerting > Alert rules > Import) or provision them.
+
+groups:
+  - name: PowerIQ
+    folder: PowerIQ
+    interval: 1m
+    rules:
+      - alert: PowerIQPduPowerHigh
+        expr: poweriq_pdu_active_power_watts > 5000
+        for: 5m
+        labels:
+          severity: warning
+          source: poweriq
+        annotations:
+          summary: "PDU {{ $labels.pdu_name }} power at {{ $value }}W"
+          description: "PDU {{ $labels.pdu_name }} in {{ $labels.data_center }} / {{ $labels.rack }} has exceeded 5000W for 5 minutes."
+
+      - alert: PowerIQTemperatureHigh
+        expr: poweriq_sensor_temperature_celsius > 30
+        for: 10m
+        labels:
+          severity: warning
+          source: poweriq
+        annotations:
+          summary: "Temperature sensor {{ $labels.sensor_name }} at {{ $value }}°C"
+          description: "Sensor {{ $labels.sensor_name }} in {{ $labels.data_center }} / {{ $labels.rack }} has exceeded 30°C for 10 minutes."
+
+      - alert: PowerIQHumidityOutOfRange
+        expr: poweriq_sensor_humidity_percent < 20 or poweriq_sensor_humidity_percent > 80
+        for: 15m
+        labels:
+          severity: warning
+          source: poweriq
+        annotations:
+          summary: "Humidity sensor {{ $labels.sensor_name }} at {{ $value }}%"
+          description: "Humidity at {{ $labels.sensor_name }} is outside the 20-80% range."
+
+      - alert: PowerIQCriticalEvents
+        expr: poweriq_active_events{severity="CRITICAL"} > 0
+        for: 2m
+        labels:
+          severity: critical
+          source: poweriq
+        annotations:
+          summary: "{{ $value }} active CRITICAL events in PowerIQ"
+          description: "There are {{ $value }} unresolved CRITICAL events in Sunbird PowerIQ."
+
+      - alert: PowerIQExporterDown
+        expr: poweriq_scrape_success == 0
+        for: 5m
+        labels:
+          severity: warning
+          source: poweriq
+        annotations:
+          summary: "PowerIQ exporter is failing to poll"
+          description: "The PowerIQ Prometheus exporter has been unable to reach the PowerIQ API for 5 minutes."

@@ -1,0 +1,10 @@
+global:
+  scrape_interval: 60s
+  evaluation_interval: 60s
+
+scrape_configs:
+  - job_name: "poweriq"
+    scrape_interval: 60s
+    scrape_timeout: 10s
+    static_configs:
+      - targets: ["poweriq-exporter:9131"]
