@@ -142,8 +142,9 @@ class PowerIQCollector:
                 self._cache.circuit_breakers = breakers
                 self._cache.active_events = active_events
 
-        except Exception:
-            logger.exception("Poll cycle failed")
+        except Exception as exc:
+            logger.error("Poll cycle failed — %s", exc)
+            logger.debug("Poll cycle failed", exc_info=True)
             success = False
 
         elapsed = time.monotonic() - t0
@@ -158,8 +159,10 @@ class PowerIQCollector:
             with self._cache.lock:
                 self._cache.api_request_counts[(label, "ok")] += 1
             return result
-        except Exception:
-            logger.exception("API call failed: %s", label)
+        except Exception as exc:
+            # One-liner at ERROR; full traceback only at DEBUG
+            logger.error("API call failed: %s — %s", label, exc)
+            logger.debug("API call failed: %s", label, exc_info=True)
             with self._cache.lock:
                 self._cache.api_request_counts[(label, "error")] += 1
             return []

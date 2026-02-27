@@ -11,10 +11,24 @@ from prometheus_client import REGISTRY, start_http_server
 
 from .collector import PowerIQCollector
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s %(levelname)s [%(name)s] %(message)s",
-)
+def _init_logging() -> None:
+    """Configure logging with level from LOG_LEVEL env var (default: INFO)."""
+    level_name = os.environ.get("LOG_LEVEL", "INFO").upper()
+    level = getattr(logging, level_name, None)
+    if not isinstance(level, int):
+        level = logging.INFO
+
+    logging.basicConfig(
+        level=level,
+        format="%(asctime)s %(levelname)s [%(name)s] %(message)s",
+    )
+
+    # Keep urllib3 quiet unless we're in DEBUG mode
+    if level > logging.DEBUG:
+        logging.getLogger("urllib3").setLevel(logging.ERROR)
+
+
+_init_logging()
 logger = logging.getLogger(__name__)
 
 

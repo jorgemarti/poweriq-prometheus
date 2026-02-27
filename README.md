@@ -83,6 +83,7 @@ All settings are via environment variables (see `.env.example`):
 | `EXPORTER_PORT` | `9131` | HTTP port for `/metrics` |
 | `TLS_CA_BUNDLE` | | Path to a CA bundle PEM for PowerIQ HTTPS |
 | `TLS_INSECURE` | `false` | Skip TLS verification (development only) |
+| `LOG_LEVEL` | `INFO` | Log verbosity: `DEBUG`, `INFO`, `WARNING`, `ERROR`. Use `DEBUG` for full stack traces. |
 
 ## Metrics
 
