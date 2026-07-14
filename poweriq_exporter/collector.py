@@ -300,7 +300,8 @@ class PowerIQCollector:
         yield current_fam
 
     def _collect_sensors(self, sensors, rack_map):
-        labels = ["sensor_name", "sensor_type", "pdu_id", "data_center", "rack"]
+        labels = ["sensor_id", "sensor_name", "sensor_type", "position",
+                  "vertical_position", "pdu_id", "data_center", "rack"]
 
         # Build metric families for numeric sensors
         numeric_families: dict[str, GaugeMetricFamily] = {}
@@ -318,11 +319,15 @@ class PowerIQCollector:
         )
 
         for sensor in sensors:
+            sensor_id = str(sensor.get("id", ""))
             name = sensor.get("name", sensor.get("label", "unknown"))
             sensor_type = sensor.get("type", "")
+            position = sensor.get("position", "")
+            vertical_position = sensor.get("vertical_position", "")
             pdu_id = str(sensor.get("pdu_id", ""))
             rack_name, dc_name = self._resolve_rack(sensor, rack_map)
-            lv = [name, sensor_type, pdu_id, dc_name, rack_name]
+            lv = [sensor_id, name, sensor_type, position,
+                  vertical_position, pdu_id, dc_name, rack_name]
 
             if sensor_type in _NUMERIC_SENSOR_MAP:
                 reading = sensor.get("reading") or {}

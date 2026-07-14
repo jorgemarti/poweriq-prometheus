@@ -108,7 +108,7 @@ Readings come from the first inlet of each PDU (`reading.inlet_readings[0]`).
 
 ### Sensor metrics
 
-Sensors are classified by their `type` field. All sensor metrics include the labels: **sensor_name, sensor_type, pdu_id, data_center, rack**.
+Sensors are classified by their `type` field. All sensor metrics include the labels: **sensor_id, sensor_name, sensor_type, position, vertical_position, pdu_id, data_center, rack**. `sensor_id` is the globally unique identifier and guarantees each physical sensor maps to its own time series even when several share the same name (e.g. multiple `RH`/`T1` sensors on one PDU); `position` (INLET/OUTLET) and `vertical_position` (TOP/MIDDLE/BOTTOM) describe the physical placement.
 
 **Numeric sensors** (value-based readings):
 
